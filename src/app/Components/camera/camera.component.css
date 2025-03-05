@@ -1,229 +1,138 @@
-/* Fuentes y estilo base */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-
-:root {
-  /* Paleta de colores moderna */
-  --color-primary: #007bff;
-  --color-secondary: #6c757d;
-  --color-success: #28a745;
-  --color-danger: #dc3545;
-  --color-light: #f8f9fa;
-  --color-dark: #343a40;
-
-  /* Sombras y efectos */
-  --shadow-subtle: 0 4px 6px rgba(0, 0, 0, 0.05);
-  --shadow-medium: 0 6px 12px rgba(0, 0, 0, 0.08);
-  --border-radius: 10px;
-}
-
-* {
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
-}
-
+/* Estilos simples para la aplicación de cámara */
 .camera-container {
-  width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 30px;
-  background-color: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-medium);
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--color-light);
+  padding: 15px;
+  font-family: Arial, sans-serif;
 }
 
-.camera-container.is-loading {
-  position: relative;
-}
-
-.camera-container.is-loading::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.7);
-  z-index: 10;
-}
-
-.camera-container.is-loading::before {
-  content: "Cargando...";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 11;
-  background-color: var(--color-primary);
-  color: white;
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 600;
-}
-
+/* Marco de la imagen */
 .image-frame {
   width: 100%;
-  height: 350px;
-  border: 2px dashed var(--color-secondary);
+  height: 280px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--color-light);
-  border-radius: var(--border-radius);
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
-}
-
-.image-frame:hover {
-  border-style: solid;
-  border-color: var(--color-primary);
+  background-color: #f5f5f5;
 }
 
 .captured-image {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: calc(var(--border-radius) - 4px);
 }
 
+/* Contenedor de botones - asegura que los botones se muestren correctamente */
 .button-container {
   display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
-.take-picture-button,
-.reset-button,
-.clear-gallery-button {
-  display: flex;
+/* Estilos básicos para todos los botones */
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 120px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-  font-size: 14px;
 }
 
+button:hover {
+  background-color: #2980b9;
+}
+
+/* Botón tomar foto */
 .take-picture-button {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: #3498db;
 }
 
-.take-picture-button:hover {
-  background-color: #0056b3;
-}
-
+/* Botón nueva foto */
 .reset-button {
-  background-color: var(--color-success);
-  color: white;
+  background-color: #7f8c8d;
 }
 
-.reset-button:hover {
-  background-color: #218838;
-}
-
+/* Botón limpiar galería */
 .clear-gallery-button {
-  background-color: var(--color-danger);
-  color: white;
+  background-color: #e74c3c;
 }
 
-.clear-gallery-button:hover {
-  background-color: #bd2130;
-}
-
+/* Mensaje de error */
 .error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  padding: 15px;
-  border-radius: var(--border-radius);
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: 500;
+  padding: 10px;
+  background-color: #ffecec;
+  border-left: 3px solid #e74c3c;
+  color: #e74c3c;
+  margin-bottom: 15px;
 }
 
+/* Galería de imágenes */
 .gallery-container {
-  margin-top: 30px;
+  margin-top: 20px;
+}
+
+.gallery-container h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
 }
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 15px;
-  justify-content: center;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
 }
 
 .gallery-item {
   position: relative;
-  border-radius: var(--border-radius);
+  border-radius: 5px;
   overflow: hidden;
-  box-shadow: var(--shadow-subtle);
-  transition: transform 0.3s ease;
-}
-
-.gallery-item:hover {
-  transform: scale(1.05);
+  height: 120px;
+  border: 1px solid #ddd;
 }
 
 .gallery-image {
   width: 100%;
-  height: 100px;
+  height: 100%;
   object-fit: cover;
 }
 
 .delete-photo-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   background-color: rgba(255, 255, 255, 0.8);
-  border: none;
+  color: black;
   border-radius: 50%;
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  align-items: center;
+  padding: 0;
 }
 
-.gallery-item:hover .delete-photo-button {
-  opacity: 1;
-}
-
-.delete-photo-button:hover {
-  background-color: var(--color-danger);
-  color: white;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .camera-container {
-    padding: 15px;
-  }
-
-  .image-frame {
-    height: 250px;
-  }
-
+/* Media query para dispositivos móviles */
+@media (max-width: 480px) {
   .button-container {
-    flex-direction: column;
-    gap: 10px;
+    justify-content: center;
   }
-
-  .take-picture-button,
-  .reset-button,
-  .clear-gallery-button {
-    width: 100%;
+  
+  button {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
