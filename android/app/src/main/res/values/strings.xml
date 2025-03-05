@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">proyectoCameraE2</string>
+    <string name="title_activity_main">proyectoCameraE2</string>
+    <string name="package_name">ai.P1425.app</string>
+    <string name="custom_url_scheme">ai.P1425.app</string>
+</resources>
