@@ -22,10 +22,34 @@ export class CameraService {
     try {
       // Different approach for web and mobile platforms
       if (Capacitor.isNativePlatform()) {
-        const permissionStatus = await Camera.requestPermissions();
-        return permissionStatus.camera === 'granted';
+        // Verificar permisos actuales
+        const permissionStatus = await Camera.checkPermissions();
+        
+        // Si no tenemos permisos, solicitarlos explícitamente
+        if (permissionStatus.camera !== 'granted') {
+          console.log('Solicitando permisos de cámara...');
+          const requestResult = await Camera.requestPermissions();
+          
+          if (requestResult.camera !== 'granted') {
+            console.error('Permiso de cámara denegado por el usuario');
+            await this.showPermissionAlert();
+            return false;
+          }
+        }
+        
+        // Para Android 10+ verificar permisos de almacenamiento
+        if (Capacitor.getPlatform() === 'android') {
+          try {
+            await Filesystem.requestPermissions();
+          } catch (error) {
+            console.error('Error al solicitar permisos de almacenamiento:', error);
+            await this.showStoragePermissionAlert();
+          }
+        }
+        
+        return true;
       } else {
-        // For web, we'll use the browser's camera permission API
+        // Para web, usamos la API de permisos del navegador
         if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
           try {
             await navigator.mediaDevices.getUserMedia({ video: true });
@@ -47,7 +71,7 @@ export class CameraService {
 
   async takePicture(): Promise<string | null> {
     try {
-      // Verificar permisos
+      // Verificar permisos antes de tomar la foto
       const hasPermission = await this.checkAndRequestPermissions();
       if (!hasPermission) {
         throw new Error('Permisos de cámara denegados');
@@ -66,24 +90,35 @@ export class CameraService {
         photo = await this.takePictureWeb();
       }
 
-      if (!photo.webPath) {
+      if (!photo || !photo.webPath) {
         throw new Error('No se obtuvo una imagen válida');
       }
 
       // Generar un nombre de archivo único
       const fileName = new Date().getTime() + '.jpeg';
-
+      
       // Convertir la imagen a base64
       const base64Data = await this.readAsBase64(photo);
-
+      
       // Guardar la imagen en el sistema de archivos
       let savedFile;
       if (Capacitor.isNativePlatform()) {
-        savedFile = await Filesystem.writeFile({
-          path: fileName,
-          data: base64Data,
-          directory: Directory.Documents
-        });
+        // Para dispositivos móviles, guardar en el directorio de documentos
+        try {
+          savedFile = await Filesystem.writeFile({
+            path: fileName,
+            data: base64Data,
+            directory: Directory.Documents
+          });
+        } catch (e) {
+          console.error('Error al guardar la imagen:', e);
+          // Intentar con el directorio de caché si falla
+          savedFile = await Filesystem.writeFile({
+            path: fileName,
+            data: base64Data,
+            directory: Directory.Cache
+          });
+        }
       } else {
         // Para web, usar localStorage
         savedFile = { uri: base64Data };
@@ -96,7 +131,7 @@ export class CameraService {
       return savedFile.uri;
     } catch (error) {
       console.error('Error al capturar imagen:', error);
-      await this.showErrorAlert('Error al capturar la imagen');
+      await this.showErrorAlert('Error al capturar la imagen: ' + (error instanceof Error ? error.message : String(error)));
       return null;
     }
   }
@@ -108,7 +143,6 @@ export class CameraService {
       input.type = 'file';
       input.accept = 'image/*';
       input.capture = 'environment';
-
       input.onchange = (event) => {
         const file = (event.target as HTMLInputElement).files?.[0];
         if (file) {
@@ -122,9 +156,10 @@ export class CameraService {
           };
           reader.onerror = reject;
           reader.readAsDataURL(file);
+        } else {
+          reject(new Error('No se seleccionó ningún archivo'));
         }
       };
-
       input.click();
     });
   }
@@ -132,9 +167,14 @@ export class CameraService {
   // Convertir imagen a base64
   private async readAsBase64(photo: Photo): Promise<string> {
     if (Capacitor.isNativePlatform()) {
-      const response = await fetch(photo.webPath!);
-      const blob = await response.blob();
-      return await this.convertBlobToBase64(blob) as string;
+      try {
+        const response = await fetch(photo.webPath!);
+        const blob = await response.blob();
+        return await this.convertBlobToBase64(blob) as string;
+      } catch (error) {
+        console.error('Error al convertir imagen a base64:', error);
+        throw error;
+      }
     }
     return photo.webPath || '';
   }
@@ -175,13 +215,22 @@ export class CameraService {
   async deletePhoto(photoUrl: string) {
     try {
       if (Capacitor.isNativePlatform()) {
+        // Extraer el nombre del archivo de la URL
+        const fileName = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
+        
         // Eliminar del sistema de archivos
         await Filesystem.deleteFile({
-          path: photoUrl,
+          path: fileName,
           directory: Directory.Documents
+        }).catch(async (err) => {
+          // Intentar eliminar del directorio de caché si falla
+          await Filesystem.deleteFile({
+            path: fileName,
+            directory: Directory.Cache
+          });
         });
       }
-
+      
       // Eliminar de la galería
       this.gallery = this.gallery.filter(url => url !== photoUrl);
       this.saveGallery();
@@ -196,13 +245,26 @@ export class CameraService {
       if (Capacitor.isNativePlatform()) {
         // Eliminar todas las fotos del sistema de archivos
         for (const photoUrl of this.gallery) {
-          await Filesystem.deleteFile({
-            path: photoUrl,
-            directory: Directory.Documents
-          });
+          try {
+            // Extraer el nombre del archivo de la URL
+            const fileName = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
+            
+            await Filesystem.deleteFile({
+              path: fileName,
+              directory: Directory.Documents
+            }).catch(async () => {
+              // Intentar eliminar del directorio de caché si falla
+              await Filesystem.deleteFile({
+                path: fileName,
+                directory: Directory.Cache
+              });
+            });
+          } catch (e) {
+            console.error('Error al eliminar archivo:', e);
+          }
         }
       }
-
+      
       // Limpiar la galería
       this.gallery = [];
       this.saveGallery();
@@ -216,9 +278,33 @@ export class CameraService {
     const alert = await this.alertController.create({
       header: 'Permisos de Cámara',
       message: 'La aplicación necesita permisos de cámara para funcionar. Por favor, habilite los permisos en la configuración de la aplicación.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Abrir Configuración',
+          handler: () => {
+            // Idealmente, abrir la configuración del dispositivo
+            if (Capacitor.isNativePlatform()) {
+              // Se podría usar un plugin como App para abrir la configuración
+              console.log('Abrir configuración de la aplicación');
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  // Método para mostrar alerta de permisos de almacenamiento
+  private async showStoragePermissionAlert() {
+    const alert = await this.alertController.create({
+      header: 'Permisos de Almacenamiento',
+      message: 'La aplicación necesita permisos de almacenamiento para guardar las fotos. Por favor, habilite los permisos en la configuración de la aplicación.',
       buttons: ['OK']
     });
-
     await alert.present();
   }
 
@@ -229,7 +315,6 @@ export class CameraService {
       message: message,
       buttons: ['OK']
     });
-
     await alert.present();
   }
 }
