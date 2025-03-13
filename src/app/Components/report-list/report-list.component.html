@@ -1,0 +1,91 @@
+<div class="list-container">
+  <h1>Sistema de Reportes de Mantenimiento</h1>
+  
+  <div class="filters-container">
+    <div class="filter-buttons">
+      <button
+        [class.active]="filterStatus === 'all'"
+        (click)="setFilter('all')">
+        Todos
+      </button>
+      <button
+        [class.active]="filterStatus === 'active'"
+        (click)="setFilter('active')">
+        Activos
+      </button>
+      <button
+        [class.active]="filterStatus === 'inactive'"
+        (click)="setFilter('inactive')">
+        Inactivos
+      </button>
+    </div>
+  </div>
+  
+  <div class="reports-container">
+    <div class="loading-indicator" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Cargando reportes...</p>
+    </div>
+    
+    <div class="no-reports" *ngIf="!isLoading && noReports">
+      <div class="empty-state">
+        <div class="icon-empty"></div>
+        <h3>No hay reportes disponibles</h3>
+        <p>Crea un nuevo reporte para comenzar</p>
+        <button class="btn-create" (click)="createNewReport()">Crear Primer Reporte</button>
+      </div>
+    </div>
+    
+    <div class="no-filtered-reports" *ngIf="!isLoading && !noReports && filteredReports.length === 0">
+      <h3>No hay reportes con el filtro seleccionado</h3>
+      <button class="btn-reset-filter" (click)="setFilter('all')">Ver todos los reportes</button>
+    </div>
+    
+    <div class="report-item" *ngFor="let report of filteredReports" (click)="viewDetails(report.id)">
+      <div class="report-image">
+        <img [src]="report.imageUrl" alt="Imagen del equipo" onerror="this.src='assets/placeholder.png'">
+      </div>
+      
+      <div class="report-info">
+        <div class="report-header">
+          <div class="report-date">
+            <span class="icon-calendar"></span> {{formatDate(report.date)}}
+          </div>
+          <div class="report-equipment">
+            <span class="icon-wrench"></span> {{report.equipmentId}}
+          </div>
+          <div class="report-client">
+            <span class="icon-user"></span> {{report.clientName}}
+          </div>
+          <div class="report-status" [class.active]="report.status === 'Activo'" [class.inactive]="report.status === 'Inactivo'">
+            {{report.status}}
+          </div>
+        </div>
+        
+        <div class="report-description">
+          <strong>Descripción:</strong>
+          <p>{{report.description.length > 120 ? (report.description | slice:0:120) + '...' : report.description}}</p>
+        </div>
+      </div>
+      
+      <div class="report-actions">
+        <button class="btn-view" (click)="viewDetails(report.id); $event.stopPropagation()">
+          <span class="icon-eye"></span> Detalles
+        </button>
+        <button class="btn-status"
+          [class.btn-status-active]="report.status === 'Activo'"
+          [class.btn-status-inactive]="report.status === 'Inactivo'"
+          (click)="toggleReportStatus(report, $event)">
+          <span class="icon-toggle"></span> {{report.status === 'Activo' ? 'Desactivar' : 'Activar'}}
+        </button>
+        <button class="btn-delete" (click)="deleteReport(report.id, $event)">
+          <span class="icon-trash"></span> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <button class="btn-create-floating" (click)="createNewReport()">
+    <span class="icon-plus"></span>
+  </button>
+</div>

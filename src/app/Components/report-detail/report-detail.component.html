@@ -1,0 +1,68 @@
+<div class="detail-container">
+    <div class="detail-header">
+      <button class="btn-back" (click)="goBack()">
+        <span class="icon-arrow-left"></span> Volver
+      </button>
+      <h1>Detalles del Reporte</h1>
+    </div>
+    
+    <div class="loading-indicator" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Cargando reporte...</p>
+    </div>
+    
+    <div class="not-found" *ngIf="!isLoading && notFound">
+      <h2>Reporte no encontrado</h2>
+      <p>El reporte que estás buscando no existe o ha sido eliminado.</p>
+      <button class="btn-back" (click)="goBack()">Volver a la lista</button>
+    </div>
+    
+    <div class="report-detail" *ngIf="!isLoading && report">
+      <div class="report-status-container">
+        <div class="report-id">
+          ID: <strong>{{report.equipmentId}}</strong>
+        </div>
+        <div class="report-status" [class.active]="report.status === 'Activo'" [class.inactive]="report.status === 'Inactivo'">
+          {{report.status}}
+        </div>
+      </div>
+      
+      <div class="report-image-container">
+        <img [src]="report.imageUrl" alt="Imagen del equipo" onerror="this.src='assets/placeholder.png'">
+      </div>
+      
+      <div class="report-info-card">
+        <div class="info-row">
+          <span class="info-label">Equipo:</span>
+          <span class="info-value">{{report.equipmentId}}</span>
+        </div>
+        
+        <div class="info-row">
+          <span class="info-label">Cliente:</span>
+          <span class="info-value">{{report.clientName}}</span>
+        </div>
+        
+        <div class="info-row">
+          <span class="info-label">Fecha:</span>
+          <span class="info-value">{{formatDate(report.date)}}</span>
+        </div>
+        
+        <div class="info-description">
+          <span class="info-label">Descripción:</span>
+          <div class="description-content">
+            {{report.description}}
+          </div>
+        </div>
+      </div>
+      
+      <div class="report-actions">
+        <button class="btn-toggle-status" (click)="toggleStatus()">
+          <span class="icon-toggle"></span>
+          {{report.status === 'Activo' ? 'Marcar como Inactivo' : 'Marcar como Activo'}}
+        </button>
+        <button class="btn-delete" (click)="deleteReport()">
+          <span class="icon-trash"></span> Eliminar Reporte
+        </button>
+      </div>
+    </div>
+  </div>

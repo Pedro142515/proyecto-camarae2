@@ -1,0 +1,97 @@
+<div class="report-container">
+    <div class="header-container">
+      <h1>Crear Nuevo Reporte</h1>
+      <button class="btn-back" (click)="cancelAndReturn()">Volver</button>
+    </div>
+    
+    <div class="form-container">
+      <form [formGroup]="reportForm">
+        <div class="form-group">
+          <label for="clientName">Nombre del Cliente*</label>
+          <input
+            type="text"
+            id="clientName"
+            formControlName="clientName"
+            placeholder="Ingrese nombre del cliente"
+            [class.invalid]="hasError('clientName', 'required') || hasError('clientName', 'minlength')"
+          >
+          <div class="error-message" *ngIf="hasError('clientName', 'required')">
+            El nombre del cliente es obligatorio.
+          </div>
+          <div class="error-message" *ngIf="hasError('clientName', 'minlength')">
+            El nombre debe tener al menos 3 caracteres.
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="equipmentId">ID del Equipo*</label>
+          <input
+            type="text"
+            id="equipmentId"
+            formControlName="equipmentId"
+            placeholder="Formato: EQ-2024-001"
+            [class.invalid]="hasError('equipmentId', 'required') || hasError('equipmentId', 'pattern')"
+          >
+          <div class="error-message" *ngIf="hasError('equipmentId', 'required')">
+            El ID del equipo es obligatorio.
+          </div>
+          <div class="error-message" *ngIf="hasError('equipmentId', 'pattern')">
+            El formato debe ser EQ-YYYY-XXX (Ej: EQ-2024-001).
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Imagen del Equipo*</label>
+          <div class="image-upload-container">
+            <div class="image-preview" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="Vista previa">
+              <button type="button" class="btn-remove-image" (click)="imagePreview = null; imageFile = ''">×</button>
+            </div>
+            
+            <div class="image-placeholder" *ngIf="!imagePreview" [class.error]="!imageFile && reportForm.touched">
+              <span>Seleccione o tome una foto</span>
+            </div>
+            
+            <div class="image-actions">
+              <button type="button" class="btn-camera" (click)="takePicture()" [disabled]="isSubmitting">
+                <span class="icon-camera"></span> Tomar Foto
+              </button>
+              
+              <input type="file" id="imageUpload" accept="image/*" (change)="onFileChange($event)" [disabled]="isSubmitting">
+              <label for="imageUpload" class="btn-upload" [class.disabled]="isSubmitting">
+                <span class="icon-upload"></span> Seleccionar Foto
+              </label>
+            </div>
+          </div>
+          
+          <div class="permission-warning" *ngIf="!permissionsGranted">
+            Se requieren permisos de cámara para tomar fotos.
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Descripción del Problema*</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Describa detalladamente el problema o mantenimiento requerido"
+            [class.invalid]="hasError('description', 'required') || hasError('description', 'minlength')"
+          ></textarea>
+          <div class="error-message" *ngIf="hasError('description', 'required')">
+            La descripción es obligatoria.
+          </div>
+          <div class="error-message" *ngIf="hasError('description', 'minlength')">
+            La descripción debe tener al menos 10 caracteres.
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="cancelAndReturn()" [disabled]="isSubmitting">Cancelar</button>
+          <button type="submit" class="btn-save" (click)="saveReport()" [disabled]="isSubmitting || reportForm.invalid">
+            <span *ngIf="isSubmitting" class="spinner"></span>
+            <span *ngIf="!isSubmitting">Guardar Reporte</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

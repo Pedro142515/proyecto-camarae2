@@ -1,22 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { CameraComponent } from './Components/camera/camera.component';
-import { CameraService } from './services/camera.service';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, IonicModule, CameraComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
-  title = 'proyectoCameraE2';
-
-  constructor(private cameraService: CameraService) {}
-
-  async ngOnInit() {
-    // Verificar permisos al iniciar la aplicación
-    await this.cameraService.checkAndRequestPermissions();
-  }
+export class AppComponent{
+  title = 'proyectoCameraE2'; 
 }

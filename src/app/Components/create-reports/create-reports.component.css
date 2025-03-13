@@ -1,0 +1,357 @@
+/* Estilos base */
+body {
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+    color: #333;
+    background-color: #f5f7fa;
+    line-height: 1.6;
+  }
+  
+  /* Contenedor principal */
+  .report-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+  
+  /* Título principal */
+  h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+  
+  h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #3f51b5;
+    border-radius: 3px;
+  }
+  
+  /* Contenedor del formulario */
+  .form-container {
+    padding: 1.5rem 0;
+  }
+  
+  /* Subtítulo */
+  h2 {
+    font-size: 1.4rem;
+    color: #3f51b5;
+    margin-bottom: 2rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e0e0e0;
+    font-weight: 500;
+  }
+  
+  /* Grupos de formulario */
+  .form-group {
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  
+  /* Etiquetas */
+  label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+  
+  /* Campos de texto */
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9fafc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+  }
+  
+  input[type="text"]:hover,
+  textarea:hover {
+    border-color: #bdbdbd;
+  }
+  
+  input[type="text"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #3f51b5;
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.15);
+    background-color: #fff;
+  }
+  
+  /* Área de texto */
+  textarea {
+    min-height: 140px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+  
+  /* Contenedor de carga de imágenes */
+  .image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 0.75rem;
+  }
+  
+  /* Vista previa de imagen */
+  .image-preview {
+    width: 100%;
+    height: 240px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .image-preview:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+  }
+  
+  .image-preview:hover img {
+    transform: scale(1.02);
+  }
+  
+  /* Placeholder de imagen */
+  .image-placeholder {
+    width: 100%;
+    height: 240px;
+    border: 2px dashed #c5cae9;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7986cb;
+    font-size: 1.2rem;
+    background-color: #f5f7ff;
+    transition: all 0.3s ease;
+  }
+  
+  .image-placeholder:hover {
+    border-color: #3f51b5;
+    background-color: #eef1ff;
+  }
+  
+  /* Acciones de imagen */
+  .image-actions {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.75rem;
+  }
+  
+  /* Botones */
+  .btn-camera,
+  .btn-upload,
+  .btn-save {
+    padding: 0.9rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Botones de cámara y carga */
+  .btn-camera,
+  .btn-upload {
+    background-color: #f0f2f5;
+    color: #3f51b5;
+    flex: 1;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .btn-camera:hover,
+  .btn-upload:hover {
+    background-color: #e8eaf6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .btn-camera:active,
+  .btn-upload:active {
+    transform: translateY(0);
+  }
+  
+  /* Botón de guardar */
+  .btn-save {
+    background-color: #3f51b5;
+    color: white;
+    width: 100%;
+    margin-top: 1.5rem;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(63, 81, 181, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-save:hover {
+    background-color: #303f9f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(63, 81, 181, 0.4);
+  }
+  
+  .btn-save:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(63, 81, 181, 0.3);
+  }
+  
+  /* Efecto de onda al hacer clic */
+  .btn-save::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+  
+  .btn-save:active::after {
+    animation: ripple 0.6s ease-out;
+  }
+  
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(20, 20);
+      opacity: 0;
+    }
+  }
+  
+  /* Iconos para botones */
+  .btn-camera::before {
+    content: "📷";
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .btn-upload::before {
+    content: "📁";
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  /* Estilos responsivos */
+  @media (max-width: 992px) {
+    .report-container {
+      margin: 1.5rem auto;
+      padding: 1.75rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .report-container {
+      margin: 1rem;
+      padding: 1.5rem;
+      border-radius: 10px;
+    }
+    
+    h1 {
+      font-size: 1.75rem;
+    }
+    
+    h2 {
+      font-size: 1.3rem;
+    }
+    
+    .image-actions {
+      flex-direction: column;
+    }
+    
+    .btn-camera, 
+    .btn-upload, 
+    .btn-save {
+      padding: 0.85rem 1.25rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .report-container {
+      padding: 1.25rem;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+    }
+    
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .image-preview,
+    .image-placeholder {
+      height: 200px;
+    }
+  }
+  
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .form-group {
+    animation: fadeIn 0.4s ease-out;
+    animation-fill-mode: both;
+  }
+  
+  .form-group:nth-child(1) { animation-delay: 0.1s; }
+  .form-group:nth-child(2) { animation-delay: 0.2s; }
+  .form-group:nth-child(3) { animation-delay: 0.3s; }
+  .form-group:nth-child(4) { animation-delay: 0.4s; }
+  
+  /* Accesibilidad - focus visible */
+  input:focus-visible,
+  textarea:focus-visible,
+  button:focus-visible {
+    outline: 2px solid #3f51b5;
+    outline-offset: 2px;
+  }

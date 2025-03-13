@@ -6,20 +6,22 @@ const config: CapacitorConfig = {
   webDir: 'dist/myapp/browser',
   plugins: {
     Camera: {
-      androidPermissions: ['android.permission.CAMERA', 'android.permission.READ_MEDIA_IMAGES'],
-      androidExternalStorage: true
-    },
-    Filesystem: {
-      androidPermissions: ['android.permission.READ_EXTERNAL_STORAGE', 'android.permission.WRITE_EXTERNAL_STORAGE']
-    },
-    PermissionsAndroid: {
-      permissions: [
+      androidPermissions: [
         'android.permission.CAMERA',
-        'android.permission.READ_EXTERNAL_STORAGE',
-        'android.permission.WRITE_EXTERNAL_STORAGE',
         'android.permission.READ_MEDIA_IMAGES'
       ]
+    },
+    Filesystem: {
+      androidPermissions: [
+        'android.permission.READ_EXTERNAL_STORAGE',
+        'android.permission.WRITE_EXTERNAL_STORAGE'
+      ]
     }
+  },
+  android: {
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: true
   }
 };
 
